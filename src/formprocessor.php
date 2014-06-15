@@ -71,24 +71,6 @@ $invis_array = array(
 );
 
 /****************************************************************
- * fake_in_array() is only used in PHP3 since PHP4 has a native
- * in_array.  Depending on what version of PHP you are running
- * the script will determine what is the best function to run
- * --- THERE IS NO LONGER ANY REASON TO DELETE THIS FUNCTION ---
- * Function renamed in 1.04.0
- ****************************************************************/
-
-function fake_in_array($needle, $haystack) {
-  $found = FALSE;
-  while (list($key, $val) = each($haystack)) {
-    if ($needle == $val) {
-      $found = TRUE;
-    }
-  }
-  return $found;
-}
-
-/****************************************************************
  * check_referer() parses the environmental variable
  * HTTP_REFERER for the host name and checks the referers array
  * to verify validity.
