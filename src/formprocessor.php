@@ -89,32 +89,26 @@ function fake_in_array($needle, $haystack) {
 }
 
 /****************************************************************
- * check_referer() breaks up the enviromental variable
- * HTTP_REFERER by "/" and then checks to see if the second
- * member of the array (from the explode) matches any of the
- * domains listed in the $referers array (declared at top)
+ * check_referer() parses the environmental variable
+ * HTTP_REFERER for the host name and checks the referers array
+ * to verify validity.
  ****************************************************************/
 
 function check_referer($referers) {
   global $errors;
   if (count($referers)) {
-    if (getenv('HTTP_REFERER')) {
-      $temp = explode('/', getenv('HTTP_REFERER'));
-      $found = FALSE;
-      while (list(, $stored_referer) = each($referers)) {
-        if (eregi('^' . $stored_referer . '$', $temp[2])) {
-          $found = TRUE;
-        }
-      }
+    if (isset($_SERVER['HTTP_REFERER'])) {
+      $domain = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+      $found = in_array($domain, $referers);
       if (!$found) {
         $errors[] = '1|You are coming from an unauthorized domain.  Please read the manual section titled &quot;<a href="' . MANUAL . '#setting_up" target="_blank">Setting Up the PHPFormMail Script</a>&quot;.';
-        error_log('[PHPFormMail] Illegal Referer. (' . getenv('HTTP_REFERER') . ')', 0);
+        error_log('[PHPFormMail] Illegal Referer. (' . $_SERVER['HTTP_REFERER'] . ')', 0);
       }
       return $found;
     }
     else {
       $errors[] = '0|Sorry, but I cannot figure out who sent you here.  Your browser is not sending an HTTP_REFERER.  This could be caused by a firewall or browser that removes the HTTP_REFERER from each HTTP request you submit.';
-      error_log('[PHPFormMail] HTTP_REFERER not defined. Browser: ' . getenv('HTTP_USER_AGENT') . '; Client IP: ' . getenv('REMOTE_ADDR') . '; Request Method: ' . getenv('REQUEST_METHOD') . ';', 0);
+      error_log('[PHPFormMail] HTTP_REFERER not defined. Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '; Client IP: ' . $_SERVER['REMOTE_ADDR'] . '; Request Method: ' . $_SERVER['REQUEST_METHOD'] . ';', 0);
       return FALSE;
     }
   }
