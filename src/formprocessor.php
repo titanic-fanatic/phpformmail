@@ -164,11 +164,12 @@ function check_recipients($recipient_list) {
 function map_recipients($recipient_list) {
   global $errors, $recipient_array;
   $recipients_ok = TRUE;
+  $output = array();
   $recipient_list = explode(',', $recipient_list);
-  while (list(, $val) = each($recipient_list)) {
-    $val = trim($val);
-    if (isset($recipient_array[$val])) {
-      $output[] = $recipient_array[$val];
+  foreach ($recipient_list as $recipient_key) {
+    $recipient_key = trim($recipient_key);
+    if (isset($recipient_array[$recipient_key])) {
+      $output[] = $recipient_array[$recipient_key];
     }
     else {
       $recipients_ok = FALSE;
@@ -177,12 +178,10 @@ function map_recipients($recipient_list) {
   if (!$recipients_ok) {
     $errors[] = '1|You are trying to send mail to an address that is not listed in the recipient array.';
   }
-  if (isset($output)) {
+  if (!empty($output)) {
     return join(',', $output);
   }
-  else {
-    return NULL;
-  }
+  return NULL;
 }
 
 /****************************************************************
@@ -578,12 +577,7 @@ if (count($form) > 0) {
   }
 
   // This is used for another variable function call
-  if ((count($recipient_array) > 0) == TRUE) {
-    $recipient_function = 'map_recipients';
-  }
-  else {
-    $recipient_function = 'check_recipients';
-  }
+  $recipient_function = count($recipient_array) > 0 ? 'map_recipients' : 'check_recipients';
 
   if (isset($form['recipient'])) {
     $form['recipient'] = $recipient_function($form['recipient']);
