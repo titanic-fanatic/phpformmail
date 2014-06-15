@@ -186,39 +186,22 @@ function map_recipients($recipient_list) {
 
 /****************************************************************
  * decode_vars() is used to assign all of the variables passed
- * into the form to a generic variable.  Although there are
- * two official form actions, POST and GET, I decided to use
- * this variable method so if more actions are invented, I
- * wouldn't have to change anything.
- *
- * In the first line, the request method is assigned to
- * $request with HTTP_ and _VARS appended to it.
- * In the second line uses PHPs variable variable.
- * It's basically addressing the variable $HTTP_POST_VARS or
- * $HTTP_GET_VARS and returning that.  Read more about
- * variable variables in the PHP documentation.
+ * into the form to a generic variable. Although there are
+ * two official form actions, POST and GET, the superglobal
+ * $_REQUEST covers both of them saving us some scripting logic.
  ****************************************************************/
 
 function decode_vars() {
-  if (isset($_REQUEST)) {
-    $request = '_' . getenv('REQUEST_METHOD');
-  }
-  else {
-    $request = 'HTTP_' . getenv('REQUEST_METHOD') . '_VARS';
-  }
-  global $$request;
-  if (count($$request) > 0) {
-    while (list($key, $val) = each($$request)) {
+  $output = array();
+  if (count($_REQUEST) > 0) {
+    while (list($key, $val) = each($_REQUEST)) {
       if (is_array($val)) {
         $val = implode(', ', $val);
       }
-      $output[$key] = stripslashes($val);
+      $output[$key] = $val;
     }
-    return $output;
   }
-  else {
-    return array();
-  }
+  return $output;
 }
 
 /****************************************************************
