@@ -128,23 +128,21 @@ function check_referer($referers) {
 /****************************************************************
  * check_recipients() breaks up the recipients e-mail addresses
  * and then crossrefrences the domains that are legal referers
- * Function added in 1.3.1
  ****************************************************************/
 
 function check_recipients($recipient_list) {
   global $errors, $referers;
   $recipients_ok = TRUE;
-  $recipient_list = explode(',', $recipient_list);
-  while (list(, $recipient) = each($recipient_list)) {
-    $recipient_domain = FALSE;
-    $recipient = trim($recipient);
-    reset($referers);
-    while ((list(, $stored_domain) = each($referers)) && ($recipient_domain == FALSE)) {
-      if (eregi('^[_\.a-z0-9-]*@' . $stored_domain . '$', $recipient)) {
-        $recipient_domain = TRUE;
+  $recipient_list_split = explode(',', $recipient_list);
+  foreach ($recipient_list_split as $recipient) {
+    if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+      $address_split = explode('@', strtolower(trim($recipient)));
+      if (!isset($address_split[1]) || !in_array($address_split[1], $referers)) {
+        $recipients_ok = FALSE;
+        error_log('[PHPFormMail] Illegal Recipient: ' . $recipient . ' from ' . getenv('HTTP_REFERER'), 0);
       }
     }
-    if ($recipient_domain == FALSE) {
+    else {
       $recipients_ok = FALSE;
       error_log('[PHPFormMail] Illegal Recipient: ' . $recipient . ' from ' . getenv('HTTP_REFERER'), 0);
     }
@@ -152,7 +150,7 @@ function check_recipients($recipient_list) {
   if (!$recipients_ok) {
     $errors[] = '1|You are trying to send mail to a domain that is not in the allowed recipients list.   Please read the manual section titled &quot;<a href="' . MANUAL . '#setting_up" target="_blank">Setting Up the PHPFormMail Script</a>&quot;.';
   }
-  return join(',', $recipient_list);
+  return $recipient_list;
 }
 
 /****************************************************************
