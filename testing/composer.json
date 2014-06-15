@@ -1,6 +1,9 @@
 {
     "require": {
-        "behat/behat": "3.*@stable"
+        "behat/behat": "2.5.*@stable",
+        "behat/mink": "1.5.*@stable",
+        "behat/mink-goutte-driver": "*",
+        "behat/mink-extension": "*"
     },
     "minimum-stability": "dev",
     "config": {
