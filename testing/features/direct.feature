@@ -4,5 +4,5 @@ Feature: direct
   I need to receive the correct error messages
 
   Scenario:
-    Given I am on "formmail.php"
+    Given I am on "src/formmail.php"
     Then I should see "Nothing was sent by a form. (No data was sent by POST or GET method.) There is nothing to process here."

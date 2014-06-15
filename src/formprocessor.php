@@ -35,26 +35,6 @@ define('CHECK_REFERER', TRUE);
 // |                                                                        |
 // +------------------------------------------------------------------------+
 
-// To change the address the e-mail comes from use define('FROM', 'Example Name <email@example.com>');
-define('FROM', NULL);
-
-$referers = array('www.example.com', 'example.com');
-
-// $recipient_array format is $recipient_array = array('sometext'=>'email@example.com','asdf'=>'email2@example.com');
-$recipient_array = array();
-
-$valid_env = array(
-  'REMOTE_HOST',
-  'REMOTE_ADDR',
-  'REMOTE_USER',
-  'HTTP_USER_AGENT'
-);
-
-// +------------------------------------------------------------------------+
-// | STOP EDITING! The only two required variables that need to be updated  |
-// | are $referers and $valid_env                                           |
-// +------------------------------------------------------------------------+
-
 $errors = $fieldname_lookup = array();
 $invis_array = array(
   'recipient',
